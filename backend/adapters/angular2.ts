@@ -34,6 +34,7 @@ import { DebugElement_ as DebugElement }
 // import { inspectNativeElement }
 //   from 'angular2/src/core/debug/debug_element_view_listener';
 import { Description } from '../utils/description';
+import {DirectiveMetadata, ComponentMetadata} from 'angular2/core';
 
 export class Angular2Adapter extends BaseAdapter {
   _observer: MutationObserver;
@@ -241,33 +242,33 @@ export class Angular2Adapter extends BaseAdapter {
     return ret;
   }
 
-  _getComponentInput(compEl: DebugElement): Object {
+  _getComponentInput(compEl: any): Object {
     const props = {};
     // TODO: replace this logic with one that works
-    // if (compEl._elementInjector) {
-    //   const protoInjector = compEl._elementInjector._injector._proto;
-    //   for (let i = 0; i < protoInjector.numberOfProviders; i++) {
-    //     let provider = protoInjector.getProviderAtIndex(i);
-    //     if (provider instanceof DirectiveProvider) {
-    //       props[provider.displayName] = provider.metadata.events;
-    //     }
-    //   }
-    // }
+    if (compEl._elementInjector) {
+      const protoInjector = compEl._elementInjector._injector._proto;
+      for (let i = 0; i < protoInjector.numberOfProviders; i++) {
+        let provider = protoInjector.getProviderAtIndex(i);
+        if (provider.metadata.changeDetection && provider.metadata) {
+          props[provider.displayName] = provider.metadata._inputs;
+        }
+      }
+    }
     return props;
   }
 
-  _getComponentOutput(compEl: DebugElement): Object {
+  _getComponentOutput(compEl: any): Object {
     const events = {};
     // TODO: replace this logic with one that works
-    // if (compEl._elementInjector) {
-    //   const protoInjector = compEl._elementInjector._injector._proto;
-    //   for (let i = 0; i < protoInjector.numberOfProviders; i++) {
-    //     let provider = protoInjector.getProviderAtIndex(i);
-    //     if (provider instanceof DirectiveProvider) {
-    //       events[provider.displayName] = provider.metadata.events;
-    //     }
-    //   }
-    // }
+    if (compEl._elementInjector) {
+      const protoInjector = compEl._elementInjector._injector._proto;
+      for (let i = 0; i < protoInjector.numberOfProviders; i++) {
+        let provider = protoInjector.getProviderAtIndex(i);
+        if (provider.metadata.changeDetection && provider.metadata) {
+          events[provider.displayName] = provider.metadata._outputs;
+        }
+      }
+    }
     return events;
   }
 
