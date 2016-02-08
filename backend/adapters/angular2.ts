@@ -57,7 +57,6 @@ export class Angular2Adapter extends BaseAdapter {
     const state = this._normalizeState(name, this._getComponentState(debugEl));
     const input = this._getComponentInput(debugEl);
     const output = this._getComponentOutput(debugEl);
-    const lastTickTime = this._getComponentPerf(debugEl);
 
     return {
       id,
@@ -65,11 +64,7 @@ export class Angular2Adapter extends BaseAdapter {
       description,
       state,
       input,
-      output,
-      lastTickTime,
-      __meta: {
-        event
-      }
+      output
     };
   }
 
@@ -249,7 +244,7 @@ export class Angular2Adapter extends BaseAdapter {
       const protoInjector = compEl._elementInjector._injector._proto;
       for (let i = 0; i < protoInjector.numberOfProviders; i++) {
         let provider = protoInjector.getProviderAtIndex(i);
-        if (provider.metadata.changeDetection && provider.metadata) {
+        if (provider.metadata && provider.metadata.changeDetection) {
           props[provider.displayName] = provider.metadata._inputs;
         }
       }
@@ -264,7 +259,7 @@ export class Angular2Adapter extends BaseAdapter {
       const protoInjector = compEl._elementInjector._injector._proto;
       for (let i = 0; i < protoInjector.numberOfProviders; i++) {
         let provider = protoInjector.getProviderAtIndex(i);
-        if (provider.metadata.changeDetection && provider.metadata) {
+        if (provider.metadata && provider.metadata.changeDetection) {
           events[provider.displayName] = provider.metadata._outputs;
         }
       }
